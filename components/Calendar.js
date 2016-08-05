@@ -82,12 +82,15 @@ export default class Calendar extends Component {
     const parsedDates = {};
 
     eventDates.forEach(event => {
-      const date = moment(event);
+      const date = moment(event.date);
       const month = moment(date).startOf('month').format();
       if (!parsedDates[month]) {
         parsedDates[month] = {};
       }
-      parsedDates[month][date.date() - 1] = true;
+      parsedDates[month][date.date() - 1] = {};
+      parsedDates[month][date.date() - 1]['bool'] = true;
+      parsedDates[month][date.date() - 1]['backgroundColor'] = event.backgroundColor;
+
     })
     return parsedDates;
   }
@@ -147,7 +150,7 @@ export default class Calendar extends Component {
       argMonthIsToday = argMoment.isSame(todayMoment, 'month'),
       selectedIndex = moment(selectedMoment).date() - 1,
       selectedMonthIsArg = selectedMoment.isSame(argMoment, 'month');
-
+    
     const events = (eventDatesMap !== null)
       ? eventDatesMap[argMoment.startOf('month').format()]
       : null;
@@ -155,8 +158,11 @@ export default class Calendar extends Component {
     do {
       const dayIndex = renderIndex - offset;
       const isoWeekday = (renderIndex + weekStart) % 7;
-
       if (dayIndex >= 0 && dayIndex < argMonthDaysCount) {
+        const backgroundEvent = 'red';
+        if(events && events[dayIndex] && events[dayIndex].bool){
+          backgroundEvent = events[dayIndex].backgroundColor;
+        }
         days.push((
           <Day
             startOfMonth={startOfArgMonthMoment}
@@ -168,7 +174,8 @@ export default class Calendar extends Component {
             caption={`${dayIndex + 1}`}
             isToday={argMonthIsToday && (dayIndex === todayIndex)}
             isSelected={selectedMonthIsArg && (dayIndex === selectedIndex)}
-            hasEvent={events && events[dayIndex] === true}
+            hasEvent={events && events[dayIndex] && events[dayIndex].bool}
+            backgroundEvent={backgroundEvent}
             usingEvents={this.props.eventDates.length > 0}
             customStyle={this.props.customStyle}
           />

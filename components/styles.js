@@ -97,6 +97,18 @@ const styles = StyleSheet.create({
   weekendDayText: {
     color: '#cccccc',
   },
+  red:{
+    backgroundColor:'red',
+  },
+  blue:{
+    backgroundColor:'blue',
+  },
+  yellow:{
+    backgroundColor:'yellow',
+  },
+  green:{
+    backgroundColor:'green',
+  }
 });
 
 export default styles;
